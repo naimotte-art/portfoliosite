@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wannacry</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="img/x-icon" href="iconn.png">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -123,6 +124,21 @@
   }
   .section-label::before { content: "// "; color: #2e2e2e; }
 
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
   /* ABOUT */
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
   .about-text { font-size: 14px; line-height: 2; color: var(--dim); }
@@ -184,6 +200,7 @@
   @media (prefers-reduced-motion: reduce) {
     .boot-line, .hero-name, .hero-prompt, .hero-tagline, .hero-cta { animation: none; opacity: 1; }
     .cursor { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
   }
 
   @media (max-width: 600px) {
@@ -235,14 +252,14 @@
 
 <section id="about">
   <div class="section-inner">
-    <div class="section-label">about</div>
+    <div class="section-label reveal">about</div>
     <div class="about-grid">
-      <div class="about-text">
-        <p>Security researcher with a focus on <strong>offensive tooling, malware analysis, and vulnerability research</strong>. I spend my time breaking things so others can build them safer.</p>
-        <p>Active in the CTF community. Have participated in DEF CON, Hack The Box, and a handful of private red team engagements I can't talk about.</p>
-        <p>The handle? Just a name. I prefer defense.</p>
+      <div class="about-text reveal reveal-delay-1">
+        <p>Security researcher with a focus on <strong>offensive tooling, malware analysis, and vulnerability research</strong></p>
+        <p>Active in the CTF community. Have participated in VulnLabs, LetsDefend and Hack The Box.</p>
+        <p>Don't judge my by my handle, I prefer defense.</p>
       </div>
-      <div class="about-stats">
+      <div class="about-stats reveal reveal-delay-2">
         <div class="stat">
           <div class="stat-val">47</div>
           <div class="stat-label">CTF challenges solved</div>
@@ -257,7 +274,7 @@
         </div>
         <div class="stat">
           <div class="stat-val">∞</div>
-          <div class="stat-label">coffee consumed</div>
+          <div class="stat-label">coffees consumed</div>
         </div>
       </div>
     </div>
@@ -266,9 +283,9 @@
 
 <section id="projects">
   <div class="section-inner">
-    <div class="section-label">projects</div>
+    <div class="section-label reveal">projects</div>
     <div class="projects-grid">
-      <div class="project-card">
+      <div class="project-card reveal reveal-delay-1">
         <div class="project-type">tool</div>
         <div class="project-name">portknock-rs</div>
         <div class="project-desc">High-performance port knocking daemon written in Rust. Stateless, low footprint, supports IPv6 and custom sequences.</div>
@@ -276,15 +293,15 @@
           <span class="tag">rust</span><span class="tag">networking</span><span class="tag tag-red">stealth</span>
         </div>
       </div>
-      <div class="project-card">
+      <div class="project-card reveal reveal-delay-2">
         <div class="project-type">research</div>
-        <div class="project-name">CVE-2024-XXXX</div>
-        <div class="project-desc">Heap overflow in a widely-deployed VPN client. Coordinated disclosure. Full write-up published after patch.</div>
+        <div class="project-name">CVE-2024-0056</div>
+        <div class="project-desc">Microsoft.Data.SqlClient and System.Data.SqlClient SQL Data Provider Security Feature Bypass Vulnerability.</div>
         <div class="project-tags">
           <span class="tag">pwn</span><span class="tag">memory corruption</span><span class="tag tag-red">critical</span>
         </div>
       </div>
-      <div class="project-card">
+      <div class="project-card reveal reveal-delay-3">
         <div class="project-type">ctf · 1st place</div>
         <div class="project-name">re_solver</div>
         <div class="project-desc">Automated reverse engineering assistant. Feeds binary analysis into an LLM pipeline to annotate IDA output.</div>
@@ -292,7 +309,7 @@
           <span class="tag">python</span><span class="tag">reversing</span><span class="tag">IDA</span>
         </div>
       </div>
-      <div class="project-card">
+      <div class="project-card reveal reveal-delay-4">
         <div class="project-type">tool</div>
         <div class="project-name">c2-lite</div>
         <div class="project-desc">Minimal C2 framework for red team engagements. Encrypted comms over DNS. For authorized use only.</div>
@@ -306,9 +323,9 @@
 
 <section id="skills">
   <div class="section-inner">
-    <div class="section-label">skills</div>
+    <div class="section-label reveal">skills</div>
     <div class="skills-grid">
-      <div>
+      <div class="reveal reveal-delay-1">
         <div class="skill-group-label">offensive</div>
         <div class="skill-list">
           <span class="skill-item hot">exploit dev</span>
@@ -318,20 +335,10 @@
           <span class="skill-item">phishing infra</span>
         </div>
       </div>
-      <div>
-        <div class="skill-group-label">languages</div>
-        <div class="skill-list">
-          <span class="skill-item hot">Python</span>
-          <span class="skill-item hot">Rust</span>
-          <span class="skill-item">C / C++</span>
-          <span class="skill-item">Go</span>
-          <span class="skill-item">Assembly (x86)</span>
-        </div>
-      </div>
-      <div>
+      <div class="reveal reveal-delay-2">
         <div class="skill-group-label">tooling</div>
         <div class="skill-list">
-          <span class="skill-item hot">IDA Pro / Ghidra</span>
+          <span class="skill-item hot">IDA Free / Ghidra</span>
           <span class="skill-item">Burp Suite</span>
           <span class="skill-item">Metasploit</span>
           <span class="skill-item">Wireshark</span>
@@ -344,43 +351,65 @@
 
 <section id="contact">
   <div class="section-inner">
-    <div class="section-label">contact</div>
+    <div class="section-label reveal">contact</div>
     <div class="contact-grid">
-      <a class="contact-item" href="https://github.com/wannacry" target="_blank" rel="noopener">
-        <span class="contact-icon">⌥</span>
+      <a class="contact-item reveal reveal-delay-1" href="https://www.roblox.com/users/1556745391/profile" target="_blank" rel="noopener">
+        <span class="contact-icon">⏣</span>
         <div>
-          <div class="contact-label">github</div>
-          <div class="contact-val">github.com/wannacry</div>
+          <div class="contact-label">roblox</div>
+          <div class="contact-val">@catboycomboss</div>
         </div>
       </a>
-      <a class="contact-item" href="https://twitter.com/wannacry" target="_blank" rel="noopener">
-        <span class="contact-icon">✗</span>
+      <a class="contact-item reveal reveal-delay-2" href="https://discord.com/users/wannacryforme" target="_blank" rel="noopener">
+        <span class="contact-icon">D</span>
         <div>
-          <div class="contact-label">x / twitter</div>
-          <div class="contact-val">@wannacry</div>
+          <div class="contact-label">discord</div>
+          <div class="contact-val">@wannacryforme</div>
         </div>
       </a>
-      <a class="contact-item" href="mailto:hey@wannacry.dev">
+      <a class="contact-item reveal reveal-delay-3" href="mailto:letstalk@wannacry.dev">
         <span class="contact-icon">@</span>
         <div>
           <div class="contact-label">email</div>
-          <div class="contact-val">hey@wannacry.dev</div>
+          <div class="contact-val">letstalk@wannacry.dev</div>
         </div>
       </a>
-      <a class="contact-item" href="https://keybase.io/wannacry" target="_blank" rel="noopener">
-        <span class="contact-icon">#</span>
+      <a class="contact-item reveal reveal-delay-4" href="https://t.me/wannacryforme" target="_blank" rel="noopener">
+        <span class="contact-icon">➢</span>
         <div>
-          <div class="contact-label">keybase / pgp</div>
-          <div class="contact-val">keybase.io/wannacry</div>
+          <div class="contact-label">telegram</div>
+          <div class="contact-val">@wannacryforme</div>
         </div>
       </a>
     </div>
   </div>
 </section>
 
-<footer>
+<footer class="reveal">
   <span style="color: #2e2e2e">/* </span>wannacry · built with intent, not a template<span style="color: #2e2e2e"> */</span>
 </footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
 
 </body>
 </html>
