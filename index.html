@@ -12,9 +12,9 @@
   :root {
     --green: #00ff41;
     --red: #ff3c3c;
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #181818;
+    --bg: #000000;
+    --surface: #060606;
+    --surface2: #0d0d0d;
     --muted: #555;
     --text: #ccc;
     --dim: #888;
@@ -30,6 +30,79 @@
 
   a { color: var(--green); text-decoration: none; }
   a:hover { text-decoration: underline; }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem clamp(1rem, 6vw, 4rem);
+    overflow: hidden;
+  }
+
+  /* scanline overlay on the loader too */
+  #loader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+    );
+  }
+
+  .loader-lines {
+    font-size: clamp(11px, 1.6vw, 13px);
+    line-height: 1.95;
+    color: #3a3a3a;
+    max-width: 760px;
+  }
+
+  .loader-line {
+    display: block;
+    opacity: 0;
+    white-space: pre;
+  }
+  .loader-line.ok    { color: var(--green); }
+  .loader-line.warn  { color: #c8a227; }
+  .loader-line.err   { color: var(--red); }
+  .loader-line.dim   { color: #2e2e2e; }
+  .loader-line.bright{ color: #777; }
+
+  /* the big ACCESS GRANTED stamp */
+  #loader-stamp {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(32px, 8vw, 72px);
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--green);
+    opacity: 0;
+    text-shadow: 0 0 40px rgba(0,255,65,0.6), 0 0 80px rgba(0,255,65,0.2);
+    pointer-events: none;
+  }
+
+  /* loader fade-out */
+  #loader.fade-out {
+    animation: loaderFade 0.55s ease forwards;
+  }
+
+  @keyframes loaderFade {
+    0%   { opacity: 1; }
+    100% { opacity: 0; pointer-events: none; }
+  }
+
+  /* hide page content while loader is active */
+  body.loading #page { visibility: hidden; }
 
   /* NAV */
   nav {
@@ -53,14 +126,7 @@
     position: relative;
     overflow: hidden;
   }
-  .scanlines {
-    position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 3px,
-      rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px
-    );
-  }
+  .scanlines { display: none; }
   .hero-content { position: relative; z-index: 1; max-width: 860px; }
   .boot-line {
     font-size: 12px; color: var(--muted); margin-bottom: 4px;
@@ -198,6 +264,8 @@
   @keyframes blink { 50% { opacity: 0; } }
 
   @media (prefers-reduced-motion: reduce) {
+    #loader { display: none; }
+    body.loading #page { visibility: visible; }
     .boot-line, .hero-name, .hero-prompt, .hero-tagline, .hero-cta { animation: none; opacity: 1; }
     .cursor { animation: none; }
     .reveal { opacity: 1; transform: none; transition: none; }
@@ -212,7 +280,16 @@
   }
 </style>
 </head>
-<body>
+<body class="loading">
+
+<!-- ── LOADING SCREEN ── -->
+<div id="loader">
+  <div class="loader-lines" id="loaderLines"></div>
+  <div id="loader-stamp">ACCESS GRANTED</div>
+</div>
+
+<!-- ── MAIN PAGE ── -->
+<div id="page">
 
 <nav>
   <span class="nav-handle">~/wannacry</span>
@@ -389,7 +466,80 @@
   <span style="color: #2e2e2e">/* </span>wannacry · built with intent, not a template<span style="color: #2e2e2e"> */</span>
 </footer>
 
+</div><!-- /#page -->
+
 <script>
+  // ── LOADER SEQUENCE ──
+  const LINES = [
+    { text: '[    0.000000] Linux version 6.8.0-wannacry (gcc 13.2.0)', cls: 'dim' },
+    { text: '[    0.000000] BIOS-provided physical RAM map:', cls: 'dim' },
+    { text: '[    0.000000] ACPI: RSDP 0x00000000000F04B0 000024 (v02 BOCHS )', cls: 'dim' },
+    { text: '[    0.192841] Initializing cgroup subsys cpuset', cls: 'dim' },
+    { text: '[    0.193012] Calibrating delay loop... 6384.84 BogoMIPS', cls: 'dim' },
+    { text: '[    0.312049] NET: Registered PF_INET6 protocol family', cls: 'bright' },
+    { text: '[    0.412731] e1000: eth0: NIC Link is Up 1000 Mbps Full Duplex', cls: 'ok' },
+    { text: '[    0.553801] Mounting /dev/sda1 on /: ok', cls: 'bright' },
+    { text: '[    0.619204] Mounting /home/wannacry: ok', cls: 'bright' },
+    { text: '[    0.714993] Loading kernel modules... done', cls: 'bright' },
+    { text: '[    0.883014] Starting OpenSSH daemon: ok', cls: 'ok' },
+    { text: '[    0.998217] Firewall rules loaded: 47 rules active', cls: 'ok' },
+    { text: '[    1.041882] iptables: chain WANNACRY_FILTER established', cls: 'ok' },
+    { text: '[    1.104882] VPN tunnel tun0: up (wg-quick)', cls: 'ok' },
+    { text: '', cls: 'dim' },
+    { text: 'Authenticating user: wannacry', cls: 'bright' },
+    { text: 'Checking credentials...', cls: 'bright' },
+    { text: 'Verifying GPG keyring...', cls: 'bright' },
+    { text: '[WARN] Last login: 3 days ago from 185.220.101.xx', cls: 'warn' },
+    { text: 'Identity confirmed.', cls: 'ok' },
+  ];
+
+  const container = document.getElementById('loaderLines');
+  const stamp = document.getElementById('loader-stamp');
+  const loader = document.getElementById('loader');
+
+  let lineIndex = 0;
+
+  function showNextLine() {
+    if (lineIndex >= LINES.length) {
+      setTimeout(() => {
+        stamp.style.transition = 'opacity 0.25s ease';
+        stamp.style.opacity = '1';
+        setTimeout(() => {
+          stamp.style.opacity = '0';
+          setTimeout(dismissLoader, 400);
+        }, 700);
+      }, 180);
+      return;
+    }
+
+    const { text, cls } = LINES[lineIndex];
+    const el = document.createElement('span');
+    el.className = 'loader-line' + (cls ? ' ' + cls : '');
+    el.textContent = text;
+    container.appendChild(el);
+
+    requestAnimationFrame(() => {
+      el.style.transition = 'opacity 0.06s ease';
+      el.style.opacity = '1';
+    });
+
+    lineIndex++;
+
+    const delay = cls === 'dim' ? 28 : cls === 'bright' ? 55 : 80;
+    setTimeout(showNextLine, delay);
+  }
+
+  function dismissLoader() {
+    document.body.classList.remove('loading');
+    loader.classList.add('fade-out');
+    loader.addEventListener('animationend', () => {
+      loader.style.display = 'none';
+    }, { once: true });
+  }
+
+  showNextLine();
+
+  // ── SCROLL REVEALS ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
